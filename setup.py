@@ -21,7 +21,7 @@ here = os.path.abspath(os.path.dirname(__file__))
 # Package meta-data.
 NAME = 'MedicalImageAnonymizer'
 DESCRIPTION = 'Medical Image Anonymizer Toolkit'
-URL = 'https://github.com/UniboDIFABiophysics/MedicalImageAnonymizer'
+URL = 'https://github.com/eDIMESLab/MedicalImageAnonymizer'
 EMAIL = ['enrico.giampieri@unibo.it', 'nico.curti2@unibo.it']
 AUTHOR = ['Enrico Giampieri', 'Nico Curti']
 REQUIRES_PYTHON = '>=3.4'

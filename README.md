@@ -1,14 +1,14 @@
 | **Author**   | **Project** | **Documentation**                                                                   | **Build Status**              |
 |:------------:|:-----------:|:-----------------------------------------------------------------------------------:|:-----------------------------:|
-|   [**N. Curti**](https://github.com/Nico-Curti) <br/> [**E. Giampieri**](https://github.com/EnricoGiampieri)   |  **MedicalImageAnonymizer**  | [![docs](https://img.shields.io/badge/documentation-latest-blue.svg?style=plastic)](https://github.com/UniboDIFABiophysics/MedicalImageAnonymizer/blob/master/docs/usage.png) | **Linux/MacOS** : [![travis](https://travis-ci.com/UniboDIFABiophysics/MedicalImageAnonymizer.svg?branch=master)](https://travis-ci.com/UniboDIFABiophysics/MedicalImageAnonymizer) <br/> **Windows** : [![appveyor](https://ci.appveyor.com/api/projects/status/wmf0gd3txx88d6p6?svg=true)](https://ci.appveyor.com/project/Nico-Curti/medicalimageanonymizer) |
+|   [**N. Curti**](https://github.com/Nico-Curti) <br/> [**E. Giampieri**](https://github.com/EnricoGiampieri)   |  **MedicalImageAnonymizer**  | [![docs](https://img.shields.io/badge/documentation-latest-blue.svg?style=plastic)](https://github.com/eDIMESLab/MedicalImageAnonymizer/blob/master/docs/usage.png) | **Linux/MacOS** : [![travis](https://travis-ci.com/eDIMESLab/MedicalImageAnonymizer.svg?branch=master)](https://travis-ci.com/eDIMESLab/MedicalImageAnonymizer) <br/> **Windows** : [![appveyor](https://ci.appveyor.com/api/projects/status/wmf0gd3txx88d6p6?svg=true)](https://ci.appveyor.com/project/Nico-Curti/medicalimageanonymizer) |
 
-[![GitHub pull-requests](https://img.shields.io/github/issues-pr/UniboDIFABiophysics/MedicalImageAnonymizer.svg?style=plastic)](https://github.com/UniboDIFABiophysics/MedicalImageAnonymizer/pulls)
-[![GitHub issues](https://img.shields.io/github/issues/UniboDIFABiophysics/MedicalImageAnonymizer.svg?style=plastic)](https://github.com/UniboDIFABiophysics/MedicalImageAnonymizer/issues)
+[![GitHub pull-requests](https://img.shields.io/github/issues-pr/eDIMESLab/MedicalImageAnonymizer.svg?style=plastic)](https://github.com/eDIMESLab/MedicalImageAnonymizer/pulls)
+[![GitHub issues](https://img.shields.io/github/issues/eDIMESLab/MedicalImageAnonymizer.svg?style=plastic)](https://github.com/eDIMESLab/MedicalImageAnonymizer/issues)
 
-[![GitHub stars](https://img.shields.io/github/stars/UniboDIFABiophysics/MedicalImageAnonymizer.svg?label=Stars&style=social)](https://github.com/UniboDIFABiophysics/MedicalImageAnonymizer/stargazers)
-[![GitHub watchers](https://img.shields.io/github/watchers/UniboDIFABiophysics/MedicalImageAnonymizer.svg?label=Watch&style=social)](https://github.com/UniboDIFABiophysics/MedicalImageAnonymizer/watchers)
+[![GitHub stars](https://img.shields.io/github/stars/eDIMESLab/MedicalImageAnonymizer.svg?label=Stars&style=social)](https://github.com/eDIMESLab/MedicalImageAnonymizer/stargazers)
+[![GitHub watchers](https://img.shields.io/github/watchers/eDIMESLab/MedicalImageAnonymizer.svg?label=Watch&style=social)](https://github.com/eDIMESLab/MedicalImageAnonymizer/watchers)
 
-<a href="https://github.com/UniboDIFABiophysics">
+<a href="https://github.com/eDIMESLab">
 <div class="image">
 <img src="https://cdn.rawgit.com/physycom/templates/697b327d/logo_unibo.png" width="90" height="90">
 </div>
@@ -40,7 +40,7 @@ The [Anaconda/Miniconda](https://www.anaconda.com/) python version is recommende
 Download the project or the latest release:
 
 ```bash
-git clone https://github.com/UniboDIFABiophysics/MedicalImageAnonymizer
+git clone https://github.com/eDIMESLab/MedicalImageAnonymizer
 cd MedicalImageAnonymizer
 ```
 
@@ -65,7 +65,7 @@ python setup.py develop --user
 ## Usage
 
 The simplest usage of this package is given by its GUI version.
-You can simply run the [gui.py](https://github.com/UniboDIFABiophysics/MedicalImageAnonymizer/blob/master/MedicalImageAnonymizer/GUI/gui.py) script and obtain a very simple interface to manage the file anonymisation.
+You can simply run the [gui.py](https://github.com/eDIMESLab/MedicalImageAnonymizer/blob/master/MedicalImageAnonymizer/GUI/gui.py) script and obtain a very simple interface to manage the file anonymisation.
 
 ```bash
 python ./MedicalImageAnonymizer/GUI/gui.py
@@ -79,7 +79,7 @@ import MedicalImageAnonymizer as mia
 mia.GUI()
 ```
 
-![Medical Image Anonymizer Graphic Interface](https://github.com/UniboDIFABiophysics/MedicalImageAnonymizer/blob/master/docs/usage.png)
+![Medical Image Anonymizer Graphic Interface](https://github.com/eDIMESLab/MedicalImageAnonymizer/blob/master/docs/usage.png)
 
 If you want a more deep usage of this package you can import the different modules into your Python code.
 Lets take as example the SVS anonymisation.
@@ -128,11 +128,11 @@ The same syntax could be used for the different file formats.
 * **Enrico Giampieri** [git](https://github.com/EnricoGiampieri), [unibo](https://www.unibo.it/sitoweb/enrico.giampieri)
 * **Nico Curti** [git](https://github.com/Nico-Curti), [unibo](https://www.unibo.it/sitoweb/nico.curti2)
 
-See also the list of [contributors](https://github.com/UniboDIFABiophysics/MedicalImageAnonymizer/contributors) [![GitHub contributors](https://img.shields.io/github/contributors/UniboDIFABiophysics/MedicalImageAnonymizer.svg?style=plastic)](https://github.com/UniboDIFABiophysics/MedicalImageAnonymizer/graphs/contributors/) who participated in this project.
+See also the list of [contributors](https://github.com/eDIMESLab/MedicalImageAnonymizer/contributors) [![GitHub contributors](https://img.shields.io/github/contributors/eDIMESLab/MedicalImageAnonymizer.svg?style=plastic)](https://github.com/eDIMESLab/MedicalImageAnonymizer/graphs/contributors/) who participated in this project.
 
 ## License
 
-The `MedicalImageAnonymizer` package is licensed under the MIT "Expat" License. [![License](https://img.shields.io/github/license/mashape/apistatus.svg)](https://github.com/UniboDIFABiophysics/MedicalImageAnonymizer/blob/master/LICENSE.md)
+The `MedicalImageAnonymizer` package is licensed under the MIT "Expat" License. [![License](https://img.shields.io/github/license/mashape/apistatus.svg)](https://github.com/eDIMESLab/MedicalImageAnonymizer/blob/master/LICENSE.md)
 
 
 ### Contributions
@@ -157,7 +157,7 @@ Please cite `MedicalImageAnonymizer` if you use it in your research.
   year = {2019},
   publisher = {GitHub},
   journal = {GitHub repository},
-  howpublished = {\url{https://github.com/UniboDIFABiophysics/MedicalImageAnonymizer}},
+  howpublished = {\url{https://github.com/eDIMESLab/MedicalImageAnonymizer}},
 }
 ```
 
