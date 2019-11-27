@@ -1,0 +1,3 @@
+pydicom>=1.3.0
+nibabel>=2.5.0
+enum34

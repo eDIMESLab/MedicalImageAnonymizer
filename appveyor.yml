@@ -1,0 +1,49 @@
+# Tensorflow is supported only for windows x64
+
+clone_folder: c:\projects\MedicalImageAnonymizer
+
+environment:
+
+  WORKSPACE: C:\projects
+
+  matrix:
+
+    # For Python versions available on Appveyor, see
+    # https://www.appveyor.com/docs/windows-images-software/#python
+    # The list here is complete (excluding Python 2.6, which
+    # isn't covered by this document) at the time of writing.
+
+    #- PYTHON: "C:\\Python27"
+    #  VERSION: 27
+    #  ARCH: x86
+    #- PYTHON: "C:\\Python33" # does not support opencv
+    #  VERSION: 27
+    #  ARCH: x86
+    - PYTHON: "C:\\Python34"
+      VERSION: 34
+      ARCH: x86
+    - PYTHON: "C:\\Python35"
+      VERSION: 35
+      ARCH: x86
+    #- PYTHON: "C:\\Python27-x64"
+    #  VERSION: 27
+    #  ARCH: x64
+    - PYTHON: "C:\\Python35-x64" # pip install --ignore-installed --upgrade https://storage.googleapis.com/tensorflow/windows/cpu/tensorflow-1.1.0-cp35-cp35m-window.whl
+      VERSION: 35
+      ARCH: x64
+    - PYTHON: "C:\\Python36-x64"
+      VERSION: 36
+      ARCH: x64
+
+build: off
+
+install:
+  - "%PYTHON%\\python.exe --version"
+  - cd %WORKSPACE%\MedicalImageAnonymizer
+  - "%PYTHON%\\python.exe -m pip install -U pip"
+  - "%PYTHON%\\python.exe -m pip install -r requirements.txt"
+  - "%PYTHON%\\python.exe setup.py install"
+
+test_script:
+  #- IF [%VERSION%] GEQ [35] IF [%ARCH%] == [x64] %PYTHON%\\Scripts\\pytest.exe
+  - exit 0

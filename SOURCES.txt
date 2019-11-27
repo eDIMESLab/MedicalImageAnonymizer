@@ -1,0 +1,10 @@
+setup.py
+MedicalImageAnonymizer/__init__.py
+MedicalImageAnonymizer/__version__.py
+MedicalImageAnonymizer/build.py
+MedicalImageAnonymizer/Anonymizer.py
+MedicalImageAnonymizer/DICOM_anonymizer.py
+MedicalImageAnonymizer/Nifti_anonymizer.py
+MedicalImageAnonymizer/SVS_anonymizer.py
+MedicalImageAnonymizer/GUI/__init__.py
+MedicalImageAnonymizer/GUI/gui.py
