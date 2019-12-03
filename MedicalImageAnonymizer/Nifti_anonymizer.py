@@ -6,6 +6,7 @@ import json
 import nibabel as nib
 from enum import unique
 from enum import Enum
+from ast import literal_eval as eval
 
 from MedicalImageAnonymizer.Anonymizer import Anonymizer
 
@@ -110,9 +111,13 @@ if __name__ == '__main__':
   img_deanonim = nib.load(niftifile)
 
   # different header
-  assert img_orig.header == img_deanonim.header
-  assert img_orig.header != img_anonim.header
+  if not img_orig.header == img_deanonim.header:
+    raise AssertionError()
+  if not img_orig.header != img_anonim.header:
+    raise AssertionError()
 
   # same images
-  assert np.allclose(img_orig.get_data(), img_deanonim.get_data())
-  assert np.allclose(img_orig.get_data(), img_anonim.get_data())
+  if not np.allclose(img_orig.get_data(), img_deanonim.get_data()):
+    raise AssertionError()
+  if not np.allclose(img_orig.get_data(), img_anonim.get_data()):
+    raise AssertionError()

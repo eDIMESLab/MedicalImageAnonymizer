@@ -6,6 +6,7 @@ import json
 import pydicom
 from enum import unique
 from enum import Enum
+from ast import literal_eval as eval
 
 from MedicalImageAnonymizer.Anonymizer import Anonymizer
 
@@ -136,9 +137,13 @@ if __name__ == '__main__':
   img_deanonim = pydicom.dcmread(dicomfile)
 
   # different header
-  assert list(img_deanonim.elements()) == list(img_orig.elements())
-  assert list(img_anonim.elements()) == list(img_orig.elements())
+  if not list(img_deanonim.elements()) == list(img_orig.elements()):
+    raise AssertionError()
+  if not list(img_anonim.elements()) == list(img_orig.elements()):
+    raise AssertionError()
 
   # same images
-  assert np.sum(img_orig.pixel_array == img_deanonim.pixel_array) == np.prod(img_orig.pixel_array.shape)
-  assert np.sum(img_orig.pixel_array == img_anonim.pixel_array) == np.prod(img_orig.pixel_array.shape)
+  if not np.sum(img_orig.pixel_array == img_deanonim.pixel_array) == np.prod(img_orig.pixel_array.shape):
+    raise AssertionError()
+  if not np.sum(img_orig.pixel_array == img_anonim.pixel_array) == np.prod(img_orig.pixel_array.shape):
+    raise AssertionError()

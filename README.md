@@ -8,6 +8,9 @@
 [![GitHub stars](https://img.shields.io/github/stars/eDIMESLab/MedicalImageAnonymizer.svg?label=Stars&style=social)](https://github.com/eDIMESLab/MedicalImageAnonymizer/stargazers)
 [![GitHub watchers](https://img.shields.io/github/watchers/eDIMESLab/MedicalImageAnonymizer.svg?label=Watch&style=social)](https://github.com/eDIMESLab/MedicalImageAnonymizer/watchers)
 
+| **Code quality** | [![Codacy](https://api.codacy.com/project/badge/Grade/393538cc4c4646b9ae16c5c82c4f79fd)](https://www.codacy.com/gh/eDIMESLab/MedicalImageAnonymizer?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=eDIMESLab/MedicalImageAnonymizer&amp;utm_campaign=Badge_Grade) | [![CODEBEAT](https://codebeat.co/badges/bbb3362f-8476-4175-9c51-184278618686)](https://codebeat.co/projects/github-com-edimeslab-medicalimageanonymizer-master) |
+|:-------:|:-------:|:-------:|
+
 <a href="https://github.com/eDIMESLab">
 <div class="image">
 <img src="https://cdn.rawgit.com/physycom/templates/697b327d/logo_unibo.png" width="90" height="90">

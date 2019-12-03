@@ -2,7 +2,7 @@
 
 $check = python.exe -m pip list | Select-String -Pattern "MedicalImageAnonymizer"
 
-If( $check -eq $null )
+If( $null -eq $check )
 {
   python.exe -m pip install -r .\requirements.txt
   python.exe .\setup.py develop --user > $null

@@ -10,6 +10,7 @@ import struct
 from enum import unique
 from enum import IntEnum
 from functools import partial
+from ast import literal_eval as eval
 
 from MedicalImageAnonymizer.Anonymizer import Anonymizer
 
@@ -127,8 +128,9 @@ class SVSAnonymize (Anonymizer):
     bfile.seek(0)
     Identifier_Version = bfile.read(4)
     IV = Identifier_Version.hex().upper()
-    assert IV == '49492A00'#'4D4D002A' this other value represent little endian,
-                           # not supported
+    if not IV == '49492A00':#'4D4D002A' this other value represent little endian,
+                            # not supported
+      raise AssertionError()
     IFDOffset = bfile.read(4)
     offset = self._bytes_to_int(IFDOffset)
     TifIfd_seq = []
@@ -178,7 +180,8 @@ class SVSAnonymize (Anonymizer):
       for tiff_id in ifd_seq:
         bfile.seek(tiff_id['NextOffsetPosition'])
         NextIFDOffset = self._bytes_to_int(bfile.read(4))
-        assert NextIFDOffset == tiff_id['NextIFDOffset']
+        if not NextIFDOffset == tiff_id['NextIFDOffset']:
+          raise AssertionError()
 
   def _get_position_to_nuke (self, filename, ifd_seq):
 
@@ -199,12 +202,14 @@ class SVSAnonymize (Anonymizer):
           continue
 
         offsets = self._get_tag_data(bfile, tiff_id, self.TAG_CODES.STRIPOFFSETS)
-        assert len(offsets) % 4 == 0
+        if not len(offsets) % 4 == 0:
+          raise AssertionError()
         dsize = len(offsets) // 4
         offsets = struct.unpack('I' * dsize, offsets)
 
         byte_counts = self._get_tag_data(bfile, tiff_id, self.TAG_CODES.STRIPBYTECOUNTS)
-        assert len(byte_counts) % 4 == 0
+        if not len(byte_counts) % 4 == 0:
+          raise AssertionError()
         byte_counts = struct.unpack('I' * dsize, byte_counts)
 
         to_nuke_offsets.append(offsets)
@@ -251,7 +256,6 @@ class SVSAnonymize (Anonymizer):
   def _resurrect (self, filename, ifd_seq, ID_is_label, to_nuke_offsets, to_nuke_byte_counts, infos):
 
     with open(filename, 'r+b') as bfile:
-      EMPTY = b'\x00'
 
       for offsets, byte_counts in zip(to_nuke_offsets, to_nuke_byte_counts):
         for offset, byte_count in zip(offsets, byte_counts):
@@ -303,8 +307,8 @@ class SVSAnonymize (Anonymizer):
 
     if infolog:
 
-      root, ext = os.path.splitext(self._filename)
-      filename = root + '_anonym.svs'
+      # root, ext = os.path.splitext(self._filename)
+      # filename = root + '_anonym.svs'
 
       TifIfd_seq = self._get_ifd(self._filename)
 

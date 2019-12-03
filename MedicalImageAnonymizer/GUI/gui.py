@@ -53,7 +53,7 @@ class AnonymizerGUI (Frame):
 
     self.import_type = IntVar()
     self.file = Radiobutton(window, text='Single File', value=0, variable=self.import_type)
-    self.dir  = Radiobutton(window, text='  Directory',   value=1, variable=self.import_type)
+    self.dir  = Radiobutton(window, text='  Directory', value=1, variable=self.import_type)
     self.file.grid(column=0, row=0)
     self.dir.grid(column=0, row=1)
 
@@ -105,7 +105,13 @@ class AnonymizerGUI (Frame):
 
     if self.import_type.get() == 0:
       local = os.path.abspath('.')
-      self.filename_or_path.append(askopenfilename(initialdir=local, title='Select file', filetypes=(('Dicom', '*.dcm'), ('SVS', '*.svs'), ('Nifti', '*.nii'), ('all files', '*.*'))))
+      self.filename_or_path.append(askopenfilename(initialdir=local,
+                                                   title='Select file',
+                                                   filetypes=(('Dicom', '*.dcm'),
+                                                              ('SVS', '*.svs'),
+                                                              ('Nifti', '*.nii'),
+                                                              ('all files', '*.*'))
+                                                   ))
 
     elif self.import_type.get() == 1:
       directory = askdirectory()
@@ -199,7 +205,7 @@ def GUI ():
   window.title('Medical Image Anonymizer')
   window.geometry('450x250')
 
-  app = AnonymizerGUI(window)
+  AnonymizerGUI(window)
 
   window.mainloop()
 
