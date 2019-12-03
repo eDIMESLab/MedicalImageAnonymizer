@@ -86,7 +86,7 @@ class AnonymizerGUI (Frame):
           anonym = self.anonymizers[ext[1:].upper()](f)
           anonym.anonymize(infolog=copy)
 
-        except:
+        except Exception:
           troubles += 1
           log += 'ERROR: Some troubles have occurred in the anonymization of {}'.format(f)
 

@@ -11,8 +11,6 @@ from .Nifti_anonymizer import NiftiAnonymize
 from .SVS_anonymizer import SVSAnonymize
 from .GUI.gui import GUI
 
-__all__ = ['MedicalImageAnonymizer']
-
 __package__ = 'MedicalImageAnonymizer'
 __author__  = ['Enrico Giampieri', 'Nico Curti']
 __email__ = ['enrico.giampier@unibo.it', 'nico.curti2@unibo.it']

@@ -64,7 +64,7 @@ class NiftiAnonymize (Anonymizer):
     self._set_value_from_tag(img)
 
     if infolog is not None:
-      root, ext = os.path.splitext(self._filename)
+      root, _ = os.path.splitext(self._filename)
 
       nib.save(img, root + '_anonym.nii')
 
@@ -79,7 +79,7 @@ class NiftiAnonymize (Anonymizer):
   def deanonymize (self, infolog=False):
 
     if infolog:
-      root, ext = os.path.splitext(self._filename)
+      root, _ = os.path.splitext(self._filename)
       img = nib.load(root + '_anonym.nii')
 
       with open(root + '_info.json', 'r', encoding='utf-8') as log:
