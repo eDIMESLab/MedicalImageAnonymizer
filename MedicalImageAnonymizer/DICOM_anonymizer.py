@@ -6,7 +6,7 @@ import json
 import pydicom
 from enum import unique
 from enum import Enum
-from ast import literal_eval as eval
+from ast import literal_eval
 
 from MedicalImageAnonymizer.Anonymizer import Anonymizer
 
@@ -72,7 +72,7 @@ class DICOMAnonymize (Anonymizer):
 
     if infos is not None:
       for k, v in infos.items():
-        img[eval(k)].value = v
+        img[literal_eval(k)].value = v
 
     else:
       for tag in self.TAG_CODES:

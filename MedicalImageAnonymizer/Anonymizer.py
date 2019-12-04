@@ -11,6 +11,14 @@ __package__ = 'Biomedical Images Anonymizer Base class'
 class Anonymizer (object):
 
   def __init__ (self, filename):
+    '''
+    Anonymizer object
+
+    Parameters
+    ----------
+      filename: str
+        filename to anonymize
+    '''
 
     if not os.path.isfile(filename):
       raise FileNotFoundError('Could not open or find the data file. Given: {}'.format(filename))

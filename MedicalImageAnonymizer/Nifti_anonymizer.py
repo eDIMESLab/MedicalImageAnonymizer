@@ -6,7 +6,7 @@ import json
 import nibabel as nib
 from enum import unique
 from enum import Enum
-from ast import literal_eval as eval
+from ast import literal_eval
 
 from MedicalImageAnonymizer.Anonymizer import Anonymizer
 
@@ -19,17 +19,41 @@ class NiftiAnonymize (Anonymizer):
 
 
   def __init__ (self, filename):
+    '''
+    Nifti anonymizer object
+
+    Parameters
+    ----------
+      filename: str
+        nifti filename to anonymize
+    '''
 
     super(NiftiAnonymize, self).__init__(filename)
 
 
   @unique
   class TAG_CODES (Enum):
+    '''
+    TAG name of the informations to delete from nifti metadata
+    '''
 
     db_name = 'db_name'
     descrip = 'descrip'
 
   def _get_value_from_tag (self, img):
+    '''
+    Get dictionary of metadata stored in the nifti file
+
+    Parameters
+    ----------
+      img: nibabel image
+        nifti image
+
+    Returns
+    -------
+      infos: dict
+        dictionary of metadata extracted according to the TAG_CODES
+    '''
 
     infos = dict()
 
@@ -45,7 +69,7 @@ class NiftiAnonymize (Anonymizer):
     if infos is not None:
       for k, v in infos.items():
         try:
-          img.header[k] = eval(v)
+          img.header[k] = literal_eval(v)
         except KeyError:
           pass
 

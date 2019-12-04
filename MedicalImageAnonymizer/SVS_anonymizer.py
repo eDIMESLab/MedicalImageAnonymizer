@@ -10,7 +10,7 @@ import struct
 from enum import unique
 from enum import IntEnum
 from functools import partial
-from ast import literal_eval as eval
+from ast import literal_eval
 
 from MedicalImageAnonymizer.Anonymizer import Anonymizer
 
@@ -261,7 +261,7 @@ class SVSAnonymize (Anonymizer):
         for offset, byte_count in zip(offsets, byte_counts):
 
           bfile.seek(offset)
-          bfile.write(eval(infos[str(offset)]))
+          bfile.write(literal_eval(infos[str(offset)]))
 
       # FIXME: here I'm working under the assumption that all the images are at the
       # beginning, all the labels are at the end
@@ -271,7 +271,7 @@ class SVSAnonymize (Anonymizer):
       last_offset = last_image_id['NextOffsetPosition']
 
       bfile.seek(last_offset)
-      bfile.write(eval(infos[str(last_offset)]))
+      bfile.write(literal_eval(infos[str(last_offset)]))
 
 
   def anonymize (self, infolog=False):
