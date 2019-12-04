@@ -1,0 +1,11 @@
+[run]
+branch = True
+omit =
+    */MedicalImageAnonymizer/__init__.py
+    */MedicalImageAnonymizer/__version__.py
+    */MedicalImageAnonymizer/build.py
+    */MedicalImageAnonymizer/GUI/__init__.py
+[report]
+# Regexes for lines to exclude from consideration
+exclude_lines =
+    pragma: no cover

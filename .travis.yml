@@ -80,6 +80,7 @@ before_install:
   - pip install pydicom==1.3.0
   - pip install nibabel==2.5.0
   - pip install enum34
+  - pip install codecov
 
 install:
   - python setup.py install
@@ -87,3 +88,6 @@ install:
 script:
   #- pytest
   - exit 0
+
+after_success:
+  - codecov
