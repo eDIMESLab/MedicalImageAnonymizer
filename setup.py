@@ -35,7 +35,7 @@ VERSION_FILENAME = os.path.join(here, 'MedicalImageAnonymizer', '__version__.py'
 try:
   LONG_DESCRIPTION = read_description(README_FILENAME)
 
-except FileNotFoundError:
+except IOError:
   LONG_DESCRIPTION = DESCRIPTION
 
 

@@ -77,7 +77,7 @@ class DICOMAnonymize (Anonymizer):
     else:
       for tag in self.TAG_CODES:
         try:
-          img[tag.value].value = '0'
+          img[tag.value].value = b'0'
         except KeyError:
           pass
 
