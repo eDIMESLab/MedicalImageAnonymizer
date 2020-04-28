@@ -3,5 +3,3 @@ nibabel>=2.5.0
 enum34
 configparser
 plumbum
-hashlib
-stat
