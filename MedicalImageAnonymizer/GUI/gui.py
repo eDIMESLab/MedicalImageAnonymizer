@@ -195,6 +195,7 @@ def pull_single_file(filepath, destination_dir, params, remote_config, log):
 class AnonymizerGUI (Frame):
 
   anonymizers = {'SVS' : SVSAnonymize,
+                 'DCM' : DICOMAnonymize,
                  'DICOM' : DICOMAnonymize,
                  'NII' : NiftiAnonymize}
 
@@ -268,7 +269,7 @@ class AnonymizerGUI (Frame):
 
         except Exception:
           troubles += 1
-          log += '[ERROR] Some troubles have occurred in the anonymization of {}'.format(f)
+          log += '[ERROR] Some troubles have occurred in the anonymization of {}'.format(file)
 
       if troubles:
         messagebox.showwarning('Found some troubles in the anonymization of {} file(s)'.format(troubles))
