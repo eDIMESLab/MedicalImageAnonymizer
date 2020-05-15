@@ -17,9 +17,10 @@ __package__ = 'DICOM Anonymizer'
 
 class DICOMAnonymize (Anonymizer):
 
-  def __init__ (self, filename):
+  def __init__ (self, filename, alias='0'):
 
     super(DICOMAnonymize, self).__init__(filename)
+    self.alias = alias
 
 
   @unique
@@ -77,7 +78,7 @@ class DICOMAnonymize (Anonymizer):
     else:
       for tag in self.TAG_CODES:
         try:
-          img[tag.value].value = b'0'
+          img[tag.value].value = b'0' # TODO: add alias here for the patient name
         except KeyError:
           pass
 

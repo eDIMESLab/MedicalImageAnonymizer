@@ -18,7 +18,7 @@ __package__ = 'Nifti Anonymizer'
 class NiftiAnonymize (Anonymizer):
 
 
-  def __init__ (self, filename):
+  def __init__ (self, filename, alias='anonymous'):
     '''
     Nifti anonymizer object
 
@@ -29,6 +29,7 @@ class NiftiAnonymize (Anonymizer):
     '''
 
     super(NiftiAnonymize, self).__init__(filename)
+    self.alias = alias
 
 
   @unique
@@ -76,7 +77,7 @@ class NiftiAnonymize (Anonymizer):
     else:
       for tag in self.TAG_CODES:
         try:
-          img.header[tag.value] = b'anonymous'
+          img.header[tag.value] = b'anonymous' # TODO: add alias here for the patient name
         except KeyError:
           pass
 

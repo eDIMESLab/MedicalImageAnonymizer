@@ -321,7 +321,7 @@ class AnonymizerGUI (Frame):
       directory = askdirectory()
 
       for ext in ('*.dcm', '*.svs', '*nii'):
-        self.filename_or_path.extend(glob(os.path.join(directory, ext)))
+        self.filename_or_path.extend(glob(os.path.join(directory, '**', ext), recursive=True))
 
     dtypes = Counter()
     for f in self.filename_or_path:
