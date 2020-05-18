@@ -59,12 +59,17 @@ class _Pusher (ttk.Frame):
     '''
     self._update_cb()
 
+    if not self._prev_tab[0].config:
+      tk.messagebox.showerror('Error', 'No config file loaded!')
+      return
+
     params = self._prev_tab[0].connection_params
     remote = self._prev_tab[0].remote_params
     file_list = self._prev_tab[1].file_list
 
     if not len(file_list):
       tk.messagebox.showerror('Error', 'No file to push!')
+      return
 
 
     for file in file_list:
