@@ -6,6 +6,8 @@ import tkinter as tk
 from tkinter import ttk
 
 import os
+import plumbum
+import paramiko
 from glob import glob
 from configparser import ConfigParser
 
@@ -37,10 +39,12 @@ class _Config (ttk.Frame):
     self._winfos = tk.scrolledtext.ScrolledText(self, width=60, height=25)
     # add widgets
     self._wcfg = tk.Button(self, text='Load', command=self._cfg_cb)
+    self._wscp = tk.Button(self, text='Keygen', fg='Red', command=self._set_pwd_cb)
 
     # widget on grid
     self._winfos.grid(column=0, row=2, columnspan=3, rowspan=4)
-    self._wcfg.grid(column=1, row=1)
+    self._wcfg.grid(column=1, row=0)
+    self._wscp.grid(column=0, row=0)
 
     # widget values
     self._winfos.insert(tk.INSERT, self._template_log())
@@ -95,6 +99,55 @@ class _Config (ttk.Frame):
         raise ValueError('Key not found')
 
     return True
+
+  def _set_pwd_cb (self):
+    '''
+    Set the password for the remote server and copy the password as remote key
+    '''
+    if not self._cfg_file:
+      tk.messagebox.showerror('Error', 'No config file loaded!')
+      return
+
+    username = self.parser.get('CONNECTION', 'user')
+    hostname = self.parser.get('CONNECTION', 'host')
+    password = tk.simpledialog.askstring('Password', 'Enter password:', show='\u2022', parent=root)
+
+    # generate a new ssh key using ssh-keygen
+    keygen = plumbum.local['ssh-keygen']
+    command = ('-t rsa',
+               '-b 4096',
+               #'-f ./id_rsa',
+               '-y',
+               '-q',
+               '-C {0}@{1}'.format(username, hostname),
+               '-P "{0}"'.format(password))
+
+    try:
+      exit_code, pub_key, stderr = keygen.run(command)
+
+    except plumbum.ProcessExecutionError as e:
+      tk.messagebox.showerror('Error', 'Something goes wrong with ssh-keygen')
+      return
+
+    # add the id_rsa file to the ssh path
+    #ssh_add = plumbum.local['ssh-add']
+    #ssh_add.run('.')
+
+    # now copy the id_rsa.pub to the server
+    ssh = paramiko.SSHClient()
+    ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+    ssh.connect(hostname, port=22,
+                username=username,
+                password=password)
+
+    try:
+      stdin, stdout, stderr = ssh.exec_command('mkdir -p .ssh & echo {} >> known_hosts'.format(pub_key))
+    except Exception as e:
+      tk.messagebox.showerror('Error', 'Something goes wrong with scp known_hosts')
+      return
+
+    ssh.close()
+
 
   @property
   def connection_params (self):
