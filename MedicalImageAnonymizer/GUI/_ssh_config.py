@@ -75,7 +75,7 @@ class _Config (ttk.Frame):
 
     try:
       self._check_config()
-      values = (self._cfg_file, *self.connection_params.values(), *self.remote_params.values())
+      values = sum([[self._cfg_file], list(self.connection_params.values()), list(self.remote_params.values())], [])
     except ValueError:
       values = ('', ) * 7
 
