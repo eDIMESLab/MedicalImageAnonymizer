@@ -26,7 +26,7 @@ class GUI:
     tab_pull = _Puller([tab_conf, tab_load], self.window)
 
     tabs.add(tab_conf, text='SSH config')
-    tabs.add(tab_load, text='Load data')
+    tabs.add(tab_load, text='Anonymize')
     tabs.add(tab_push, text='Push data')
     tabs.add(tab_pull, text='Pull data')
 

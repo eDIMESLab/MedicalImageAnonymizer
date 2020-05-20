@@ -7,7 +7,6 @@ from tkinter import ttk
 
 import os
 import plumbum
-import paramiko
 from glob import glob
 from configparser import ConfigParser
 
@@ -113,17 +112,17 @@ class _Config (ttk.Frame):
     password = tk.simpledialog.askstring('Password', 'Enter password:', show='\u2022', parent=root)
 
     # generate a new ssh key using ssh-keygen
-    keygen = plumbum.local['ssh-keygen']
-    command = ('-t rsa',
-               '-b 4096',
-               #'-f ./id_rsa',
-               '-y',
-               '-q',
-               '-C {0}@{1}'.format(username, hostname),
-               '-P "{0}"'.format(password))
+    keygen = plumbum.local['ssh-keygen']['-t']['rsa']['-b']['4096']['-y']['-q']['-C']['{0}@{1}'.format(username, hostname)]
+
+    with open('./dummy.txt', 'w') as fp:
+      fp.write('{}\n'.format(self.parser.get('CONNECTION', 'keyfile')))
+
+    keygen = keygen < './dummy.txt'
+    os.remove('./dummy.txt')
 
     try:
-      exit_code, pub_key, stderr = keygen.run(command)
+      pub_key = keygen()
+      pub_key = pub_key.split('ssh-rsa')[1].strip()
 
     except plumbum.ProcessExecutionError as e:
       tk.messagebox.showerror('Error', 'Something goes wrong with ssh-keygen')
@@ -134,20 +133,23 @@ class _Config (ttk.Frame):
     #ssh_add.run('.')
 
     # now copy the id_rsa.pub to the server
-    ssh = paramiko.SSHClient()
-    ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-    ssh.connect(hostname, port=22,
-                username=username,
-                password=password)
-
     try:
-      stdin, stdout, stderr = ssh.exec_command('mkdir -p .ssh & echo {} >> known_hosts'.format(pub_key))
+      with plumbum.machines.paramiko_machine.ParamikoMachine(**self.connection_params) as rem:
+        # directories creation
+        rem['makedir']['-p']('.ssh')
+
+        with rem.cwd('./.ssh'):
+          rem['echo'](pub_key)>>(rem.cwd/'known_hosts')
+
+        rem['makedir']['-p'](self.remote_params['base_dir'])
+
+        with rem.cwd(self.remote_params['base_dir']):
+          rem['makedir']['-p'](self.remote_params['todo_subdir'])
+          rem['makedir']['-p'](self.remote_params['done_subdir'])
+
     except Exception as e:
-      tk.messagebox.showerror('Error', 'Something goes wrong with scp known_hosts')
+      tk.messagebox.showerror('Error', str(e))
       return
-
-    ssh.close()
-
 
   @property
   def connection_params (self):
