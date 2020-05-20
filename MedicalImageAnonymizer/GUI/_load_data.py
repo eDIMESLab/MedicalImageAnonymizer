@@ -71,28 +71,31 @@ class _Anonymizer (ttk.Frame):
     Load a single file
     '''
     local = os.path.abspath('.')
-    listfile = tk.filedialog.askopenfilename(initialdir=local,
-                                             title='Select file',
-                                             filetypes=(('Dicom', '*.dcm'),
-                                                        ('SVS', '*.svs'),
-                                                        ('Tiff', '*.tiff'),
-                                                        ('Nifti', '*.nii'),
-                                                        ('all files', '*.*'))
-                                             )
+    listfile = tk.filedialog.askopenfilenames(initialdir=local,
+                                              title='Select file',
+                                              filetypes=(('Dicom', '*.dcm'),
+                                                         ('SVS', '*.svs'),
+                                                         ('Tiff', '*.tiff'),
+                                                         ('Nifti', '*.nii'),
+                                                         ('all files', '*.*'))
+                                              )
 
     if not listfile:
       return
 
-    self._files.append(listfile)
+    self._files = list(listfile)
     self._outdir = os.path.dirname(self._files[-1]) + '_anonym'
 
-    log = 'Loading {} file'.format(self._files[-1])
+    log = 'Loading {} file'.format('\n'.join(self._files))
+    available_ext = ('.{}'.format(x.lower()) for x in self._anonymizers.keys())
 
-    root, ext = os.path.splitext(self._files[-1])
-    found = [(ext[1:], 1)]
+    found = []
+
+    for ext in available_ext:
+      found.append((ext, len([x for x in self._files if x.endswith(ext)])))
 
     dtypes = ''.join('  {}:{}\n'.format(k, v ) for k, v in found)
-    log = '{}\nLoad 1 files:\n{}\noutput directory: {}\n'.format(log, dtypes, self._outdir)
+    log = '{}\nLoad {} files:\n{}\noutput directory: {}\n'.format(log, len(self._files), dtypes, self._outdir)
 
     self._winfos.insert(tk.INSERT, log)
 
@@ -108,6 +111,7 @@ class _Anonymizer (ttk.Frame):
     available_ext = ('*.{}'.format(x.lower()) for x in self._anonymizers.keys())
 
     found = []
+    self._files = []
 
     for ext in available_ext:
       all_files_in_subdirs = glob(os.path.join(directory, '**', ext), recursive=True)

@@ -28,12 +28,14 @@ class _Pusher (ttk.Frame):
     self._winfos = tk.scrolledtext.ScrolledText(self, width=60, height=20)
     # variables
     self._import_type = tk.IntVar()
+    self._num_files = tk.StringVar()
 
     # add widgets
     self._wload = tk.Button(self, text='Load', command=self._load_cb)
     self._wfile = tk.Radiobutton(self, text='Single File', value=0, variable=self._import_type)
     self._wdir  = tk.Radiobutton(self, text='  Directory', value=1, variable=self._import_type)
-    self._wupdate = tk.Button(self, text='Update', command=self._update_cb)
+    self._wnum_files = tk.Label(self, textvariable=self._num_files)
+    #self._wupdate = tk.Button(self, text='Load Anonymize data', command=self._update_cb)
     self._wpush = tk.Button(self, text='Push files', command=self._push_cb)
 
     # widget on grid
@@ -41,38 +43,45 @@ class _Pusher (ttk.Frame):
     self._wload.grid(column=2, row=0)
     self._wfile.grid(column=1, row=0)
     self._wdir.grid(column=1, row=1)
-    self._wupdate.grid(column=4, row=1)
+    self._wnum_files.grid(column=4, row=1)
+    #self._wupdate.grid(column=4, row=1)
     self._wpush.grid(column=4, row=2)
 
     # widget values
     self._winfos.insert(tk.INSERT, self._template_log())
+
+    self._num_files.set('# of files: {}'.format(len(self._files)))
 
   def _load_from_file (self):
     '''
     Load a single file
     '''
     local = os.path.abspath('.')
-    listfile = tk.filedialog.askopenfilename(initialdir=local,
-                                             title='Select file',
-                                             filetypes=(('Dicom', '*.dcm'),
-                                                        ('SVS', '*.svs'),
-                                                        ('Tiff', '*.tiff'),
-                                                        ('Nifti', '*.nii'),
-                                                        ('all files', '*.*'))
-                                             )
+    listfile = tk.filedialog.askopenfilenames(initialdir=local,
+                                              title='Select file',
+                                              filetypes=(('Dicom', '*.dcm'),
+                                                         ('SVS', '*.svs'),
+                                                         ('Tiff', '*.tiff'),
+                                                         ('Nifti', '*.nii'),
+                                                         ('all files', '*.*'))
+                                              )
 
     if not listfile:
       return
 
-    self._files.append(listfile)
+    self._files = list(listfile)
 
-    log = 'Loading {} file'.format(self._files[-1])
+    log = 'Loading {} file'.format('\n'.join(self._files))
 
-    root, ext = os.path.splitext(self._files[-1])
-    found = [(ext[1:], 1)]
+    available_ext = ('.{}'.format(x.lower()) for x in self._prev_tab[1]._anonymizers.keys())
+
+    found = []
+
+    for ext in available_ext:
+      found.append((ext, len([x for x in self._files if x.endswith(ext)])))
 
     dtypes = ''.join('  {}:{}\n'.format(k, v ) for k, v in found)
-    log = '{}\nLoad 1 files:\n'.format(log, dtypes)
+    log = '{}\nLoad {} files:\n{}\n'.format(log, len(self._files), dtypes)
 
     self._winfos.insert(tk.INSERT, log)
 
@@ -88,6 +97,7 @@ class _Pusher (ttk.Frame):
     available_ext = ('*.{}'.format(x.lower()) for x in self._prev_tab[1]._anonymizers.keys())
 
     found = []
+    self._files = []
 
     for ext in available_ext:
       all_files_in_subdirs = glob(os.path.join(directory, '**', ext), recursive=True)
@@ -112,6 +122,8 @@ class _Pusher (ttk.Frame):
 
     else:
       raise ValueError('Something goes wrong')
+
+    self._num_files.set('# of files: {}'.format(len(self._files)))
 
   def _template_log (self):
     '''
@@ -160,8 +172,8 @@ class _Pusher (ttk.Frame):
         self._winfos.insert(tk.INSERT, log)
 
       except Exception as e:
-        print(e)
-        tk.messagebox.showerror('Error', e)
+        print(repr(e))
+        tk.messagebox.showerror('Error', repr(e))
         return
 
     tk.messagebox.showinfo('Push', 'Pushed {} files'.format(len(file_list)))
