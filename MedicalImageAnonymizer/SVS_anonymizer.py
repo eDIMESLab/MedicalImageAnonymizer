@@ -274,7 +274,7 @@ class SVSAnonymize (Anonymizer):
       bfile.write(literal_eval(infos[str(last_offset)]))
 
 
-  def anonymize (self, infolog=False):
+  def anonymize (self, outfile=None, outlog=None, infolog=False):
 
     TifIfd_seq = self._get_ifd(self._filename)
 
@@ -287,8 +287,12 @@ class SVSAnonymize (Anonymizer):
     if infolog:
 
       root, ext = os.path.splitext(self._filename)
-      shutil.copyfile(self._filename, root + '_anonym.svs')
-      filename = root + '_anonym.svs'
+
+      if outfile is None:
+        outfile = root + '_anonym.svs'
+
+      shutil.copyfile(self._filename, outfile)
+      filename = outfile
 
       infos = dict()
 
@@ -299,7 +303,10 @@ class SVSAnonymize (Anonymizer):
 
     if infolog:
 
-      with open(root + '_info.json', 'w', encoding='utf-8') as log:
+      if outlog is None:
+        outlog = root + '_info.json'
+
+      with open(outlog, 'w', encoding='utf-8') as log:
         json.dump({str(k) : str(v) for k, v in infos.items()}, log)
 
 

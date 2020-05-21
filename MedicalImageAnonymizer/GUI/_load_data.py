@@ -7,7 +7,9 @@ from tkinter import ttk
 
 import os
 import json
+import shutil
 from glob import glob
+from pathlib import Path
 
 from MedicalImageAnonymizer import DICOMAnonymize
 from MedicalImageAnonymizer import NiftiAnonymize
@@ -84,7 +86,8 @@ class _Anonymizer (ttk.Frame):
       return
 
     self._files = list(listfile)
-    self._outdir = os.path.dirname(self._files[-1]) + '_anonym'
+    self._indir = os.path.dirname(self._files[-1])
+    self._outdir = self._indir + '_anonym'
 
     log = 'Loading {} file'.format('\n'.join(self._files))
     available_ext = ('.{}'.format(x.lower()) for x in self._anonymizers.keys())
@@ -104,25 +107,24 @@ class _Anonymizer (ttk.Frame):
     '''
     Load file from a directory
     '''
-    directory = tk.filedialog.askdirectory()
-    if not directory:
+    self._indir = tk.filedialog.askdirectory()
+    if not self._indir:
       return
 
     available_ext = ('*.{}'.format(x.lower()) for x in self._anonymizers.keys())
 
     found = []
-    self._files = []
+    files = glob(os.path.join(self._indir, '**', '*'), recursive=True)
+    self._files = [x for x in files if Path(x).is_file() and not Path(x).is_symlink() and not Path(x).suffix == '.lnk']
 
     for ext in available_ext:
-      all_files_in_subdirs = glob(os.path.join(directory, '**', ext), recursive=True)
-      self._files.extend(all_files_in_subdirs)
-
+      all_files_in_subdirs = glob(os.path.join(self._indir, '**', ext), recursive=True)
       found.append((ext, len(all_files_in_subdirs)))
 
-    self._outdir = directory + '_anonym'
+    self._outdir = self._indir + '_anonym'
 
     dtypes = ''.join('  {}:{}\n'.format(k, v ) for k, v in found)
-    log = 'Found {} files in {}:\n{}\noutput directory: {}\n'.format(len(self._files), directory, dtypes, self._outdir)
+    log = 'Found {} files in {}:\n{}\noutput directory: {}\n'.format(len(self._files), self._indir, dtypes, self._outdir)
 
     self._winfos.insert(tk.INSERT, log)
 
@@ -208,11 +210,8 @@ class _Anonymizer (ttk.Frame):
 
     for i in range(len(self._files)):
 
-      err, outfile = self._anonymize(self._files[i], self._outdir)
+      err = self._anonymize(self._files[i])
       issues += err
-
-      # replace the file as the anonym version
-      self._files[i] = outfile
 
       # log
       log = '{}Anonymize {}...\n'.format(log, self._files[i])
@@ -226,29 +225,32 @@ class _Anonymizer (ttk.Frame):
 
     tk.messagebox.showinfo('Anonymizer!',
                            '{}/{} files have been anonymized! '
-                           ''.format(len([x for x in self._files if x]), len(self._files)))
+                           ''.format(len(self._files) - issues, len(self._files)))
 
 
 
 
-  def _anonymize (self, filename, outdir):
+  def _anonymize (self, filename):
     '''
     Anonymize the filename given
     '''
 
-    root, ext = os.path.splitext(filename)
-    dirname = os.path.dirname(root)
-    dtype = ext[1:].upper()
+    path_filename = Path(filename)
+    dtype = path_filename.suffix[1:].upper()
+    outfile = Path(self._outdir)/path_filename.absolute().relative_to(self._indir)
+    outlog = Path(self._outdir + '_log')/path_filename.absolute().relative_to(self._indir)
+
+    outfile.parent.mkdir(parents=True, exist_ok=True)
+    outlog.parent.mkdir(parents=True, exist_ok=True)
 
     try:
-      anonymizer = self._anonymizers[dtype](filename)
-      anonymizer.anonymize(infolog=True)
 
-      outfile = os.path.basename(root) + '_anonym' + ext
-      outinfo = os.path.basename(root) + '_info.json'
-      # move the outfile to the outdir (aka "mirror") directory
-      os.rename(os.path.join(dirname, outfile), os.path.join(outdir, outfile))
-      os.rename(os.path.join(dirname, outinfo), os.path.join(outdir, outinfo))
+      anonymizer = self._anonymizers[dtype](filename)
+      anonymizer.anonymize(infolog=True, outfile=str(outfile), outlog=str(outlog.with_suffix('.json')))
+
+    except KeyError as e:
+      # no anonymizer available but it could be a usefull file
+      shutil.copy(str(path_filename), str(outfile))
 
     except Exception as e:
       print(e)
@@ -256,9 +258,9 @@ class _Anonymizer (ttk.Frame):
                                 'Found some troubles in the anonymization'
                                 ' of file {}. It can be corrupted or not '
                                 'a valid {} file'.format(filename, dtype))
-      return (True, '')
+      return True
 
-    return (False, os.path.join(outdir, outfile))
+    return False
 
 
   @property

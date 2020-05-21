@@ -83,7 +83,7 @@ class DICOMAnonymize (Anonymizer):
           pass
 
 
-  def anonymize (self, infolog=False):
+  def anonymize (self, outfile=None, outlog=None, infolog=False):
 
     img = pydicom.dcmread(self._filename)
 
@@ -93,9 +93,15 @@ class DICOMAnonymize (Anonymizer):
     if infolog is not None:
       root, ext = os.path.splitext(self._filename)
 
-      img.save_as(root + '_anonym.dcm')
+      if outfile is None:
+        outfile = root + '_anonym.dcm'
 
-      with open(root + '_info.json', 'w', encoding='utf-8') as log:
+      img.save_as(outfile)
+
+      if outlog is None:
+        outlog = root + '_info.json'
+
+      with open(outlog, 'w', encoding='utf-8') as log:
         json.dump(infos, log)
         log.write('\n')
 

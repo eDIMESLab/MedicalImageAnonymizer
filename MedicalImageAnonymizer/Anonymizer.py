@@ -25,7 +25,7 @@ class Anonymizer (object):
 
     self._filename = filename
 
-  def anonymize (self, infolog=False):
+  def anonymize (self, outfile=None, outlog=None, infolog=False):
     pass
 
   def deanonymize (self, infolog=False):

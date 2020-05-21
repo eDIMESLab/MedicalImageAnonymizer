@@ -81,7 +81,7 @@ class NiftiAnonymize (Anonymizer):
         except KeyError:
           pass
 
-  def anonymize (self, infolog=False):
+  def anonymize (self, outfile=None, outlog=None, infolog=False):
 
     img = nib.load(self._filename)
 
@@ -91,9 +91,15 @@ class NiftiAnonymize (Anonymizer):
     if infolog is not None:
       root, _ = os.path.splitext(self._filename)
 
-      nib.save(img, root + '_anonym.nii')
+      if outfile is None:
+        outfile = root + '_anonym.nii'
 
-      with open(root + '_info.json', 'w', encoding='utf-8') as log:
+      nib.save(img, outfile)
+
+      if outlog is None:
+        outlog = root + '_info.json'
+
+      with open(outlog, 'w', encoding='utf-8') as log:
         json.dump(infos, log)
         log.write('\n')
 
