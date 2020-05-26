@@ -28,10 +28,10 @@ class DICOMAnonymize (Anonymizer):
 
     InstanceCreationDate    = ('0008', '0012')
     InstanceCreationTime    = ('0008', '0013')
-    StudyDate               = ('0008', '0020')
-    SeriesDate              = ('0008', '0021')
-    AcquisitionDate         = ('0008', '0022')
-    ContentDate             = ('0008', '0023')
+    # StudyDate               = ('0008', '0020')
+    # SeriesDate              = ('0008', '0021')
+    # AcquisitionDate         = ('0008', '0022')
+    # ContentDate             = ('0008', '0023')
     InstitutionName         = ('0008', '0080')
     ReferingPhysicianName   = ('0008', '0090')
     PerformingPhysicianName = ('0008', '1050')
@@ -42,7 +42,7 @@ class DICOMAnonymize (Anonymizer):
     PatientID               = ('0010', '0020')
     IssuerofPatientID       = ('0010', '0021')
     PatientBirthDate        = ('0010', '0030')
-    PatientSex              = ('0010', '0040')
+    # PatientSex              = ('0010', '0040')
 
     AcquisitionNumber       = ('0020', '0012')
 

@@ -107,15 +107,15 @@ class _Config (ttk.Frame):
       tk.messagebox.showerror('Error', 'No config file loaded!')
       return
 
-    username = self.parser.get('CONNECTION', 'user')
-    hostname = self.parser.get('CONNECTION', 'host')
+    username = self._parser.get('CONNECTION', 'user')
+    hostname = self._parser.get('CONNECTION', 'host')
     password = tk.simpledialog.askstring('Password', 'Enter password:', show='\u2022', parent=root)
 
     # generate a new ssh key using ssh-keygen
     keygen = plumbum.local['ssh-keygen']['-t']['rsa']['-b']['4096']['-y']['-q']['-C']['{0}@{1}'.format(username, hostname)]
 
     with open('./dummy.txt', 'w') as fp:
-      fp.write('{}\n'.format(self.parser.get('CONNECTION', 'keyfile')))
+      fp.write('{}\n'.format(self._parser.get('CONNECTION', 'keyfile')))
 
     keygen = keygen < './dummy.txt'
     os.remove('./dummy.txt')
