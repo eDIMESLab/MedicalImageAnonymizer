@@ -4,9 +4,8 @@
 import os
 import json
 import pydicom
-from enum import unique
-from enum import Enum
 from ast import literal_eval
+from configparser import ConfigParser
 
 from MedicalImageAnonymizer.Anonymizer import Anonymizer
 
@@ -21,49 +20,22 @@ class DICOMAnonymize (Anonymizer):
 
     super(DICOMAnonymize, self).__init__(filename)
     self.alias = alias
+    self._load_tags_list(os.path.join(os.path.dirname(__file__), 'GUI', 'dicom_tags.ini'))
 
+  def _load_tags_list (self, filename):
 
-  @unique
-  class TAG_CODES (Enum):
+    parser = ConfigParser()
+    parser.read(filename)
 
-    InstanceCreationDate    = ('0008', '0012')
-    InstanceCreationTime    = ('0008', '0013')
-    # StudyDate               = ('0008', '0020')
-    # SeriesDate              = ('0008', '0021')
-    # AcquisitionDate         = ('0008', '0022')
-    # ContentDate             = ('0008', '0023')
-    InstitutionName         = ('0008', '0080')
-    ReferingPhysicianName   = ('0008', '0090')
-    PerformingPhysicianName = ('0008', '1050')
-    PhysicianReadingName    = ('0008', '1060')
-    OperatorsName           = ('0008', '1070')
-
-    PatientName             = ('0010', '0010')
-    PatientID               = ('0010', '0020')
-    IssuerofPatientID       = ('0010', '0021')
-    PatientBirthDate        = ('0010', '0030')
-    # PatientSex              = ('0010', '0040')
-
-    AcquisitionNumber       = ('0020', '0012')
-
-    PrivateCreator1         = ('07a1', '0010')
-    PrivateData1            = ('07a1', '015d')
-    PrivateData2            = ('07a1', '1070')
-    PrivateCreator2         = ('07a3', '0010')
-    PrivateTag1             = ('07a3', '101c')
-    PrivateTag2             = ('07a3', '101d')
-    PrivateTag3             = ('07a3', '1022')
-    PrivateTag4             = ('07a5', '0010')
-    PrivateTag5             = ('07a5', '1054')
-
+    self.TAG_CODES = parser._sections['DICOM_TAGS']
 
   def _get_value_from_tag (self, img):
 
     infos = {}
 
-    for tag in self.TAG_CODES:
+    for k, tag in self.TAG_CODES.items():
       try:
-        infos[str(tag.value)] = str(img[tag.value].value)
+        infos[tag] = str(img[literal_eval(tag)].value)
       except KeyError:
         pass
 
@@ -76,9 +48,9 @@ class DICOMAnonymize (Anonymizer):
         img[literal_eval(k)].value = v
 
     else:
-      for tag in self.TAG_CODES:
+      for k, tag in self.TAG_CODES.items():
         try:
-          img[tag.value].value = b'0' # TODO: add alias here for the patient name
+          img[literal_eval(tag)].value = b'0' # TODO: add alias here for the patient name
         except KeyError:
           pass
 
@@ -145,12 +117,12 @@ if __name__ == '__main__':
 
   # different header
   if not list(img_deanonim.elements()) == list(img_orig.elements()):
-    raise AssertionError()
-  if not list(img_anonim.elements()) == list(img_orig.elements()):
-    raise AssertionError()
+    raise AssertionError('different header deanonim')
+  if list(img_anonim.elements()) == list(img_orig.elements()):
+    raise AssertionError('different header anonim')
 
   # same images
   if not np.sum(img_orig.pixel_array == img_deanonim.pixel_array) == np.prod(img_orig.pixel_array.shape):
-    raise AssertionError()
+    raise AssertionError('different image deanonim')
   if not np.sum(img_orig.pixel_array == img_anonim.pixel_array) == np.prod(img_orig.pixel_array.shape):
-    raise AssertionError()
+    raise AssertionError('different header anonim')
