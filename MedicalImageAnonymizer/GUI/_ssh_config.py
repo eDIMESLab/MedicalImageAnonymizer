@@ -4,9 +4,11 @@
 
 import tkinter as tk
 from tkinter import ttk
+import tkinter.simpledialog
 
 import os
 import plumbum
+import paramiko
 from glob import glob
 from configparser import ConfigParser
 
@@ -109,45 +111,64 @@ class _Config (ttk.Frame):
 
     username = self._parser.get('CONNECTION', 'user')
     hostname = self._parser.get('CONNECTION', 'host')
-    password = tk.simpledialog.askstring('Password', 'Enter password:', show='\u2022', parent=root)
+    keyfile  = self._parser.get('CONNECTION', 'keyfile')
+    password = tk.simpledialog.askstring('Password', 'Enter password:', show='\u2022', parent=self)
+
+
+    if os.path.exists(keyfile):
+      tk.messagebox.showwarning('Warning!',
+                                'The keyfile already exists.')
+      return
 
     # generate a new ssh key using ssh-keygen
-    keygen = plumbum.local['ssh-keygen']['-t']['rsa']['-b']['4096']['-y']['-q']['-C']['{0}@{1}'.format(username, hostname)]
+    key = paramiko.RSAKey.generate(4096)
+    key.write_private_key_file(keyfile)  # print private key
+    pub_key = '{0} {1} {2}@{3}\n'.format(key.get_name(), key.get_base64(), username, hostname)
 
-    with open('./dummy.txt', 'w') as fp:
-      fp.write('{}\n'.format(self._parser.get('CONNECTION', 'keyfile')))
+    # keygen = plumbum.local['ssh-keygen']['-t']['rsa']['-b']['4096']['-y']['-q']['-C']['{0}@{1}'.format(username, hostname)]
 
-    keygen = keygen < './dummy.txt'
-    os.remove('./dummy.txt')
+    # with open('./dummy.txt', 'w') as fp:
+    #   fp.write('{}\n'.format(self._parser.get('CONNECTION', 'keyfile')))
 
-    try:
-      pub_key = keygen()
-      pub_key = pub_key.split('ssh-rsa')[1].strip()
+    # keygen = keygen < './dummy.txt'
+    # os.remove('./dummy.txt')
 
-    except plumbum.ProcessExecutionError as e:
-      tk.messagebox.showerror('Error', 'Something goes wrong with ssh-keygen')
-      return
+    # try:
+    #   pub_key = keygen()
+    #   pub_key = pub_key.split('ssh-rsa')[1].strip()
+
+    # except plumbum.ProcessExecutionError as e:
+    #   tk.messagebox.showerror('Error', 'Something goes wrong with ssh-keygen')
+    #   return
 
     # add the id_rsa file to the ssh path
     #ssh_add = plumbum.local['ssh-add']
     #ssh_add.run('.')
 
+    local_key = './authorized_keys'
+    with open(local_key, 'w') as fp:
+      fp.write(pub_key)
+
     # now copy the id_rsa.pub to the server
     try:
-      with plumbum.machines.paramiko_machine.ParamikoMachine(**self.connection_params) as rem:
+      with plumbum.machines.paramiko_machine.ParamikoMachine(host=hostname, user=username, password=password) as rem:
         # directories creation
-        rem['makedir']['-p']('.ssh')
+        rem['mkdir']['-p']('.ssh')
 
         with rem.cwd('./.ssh'):
-          rem['echo'](pub_key)>>(rem.cwd/'known_hosts')
+          remote_key = rem.path(local_key)
+          plumbum.path.utils.copy(local_key, remote_key)
 
-        rem['makedir']['-p'](self.remote_params['base_dir'])
+        rem['mkdir']['-p'](self.remote_params['base_dir'])
 
         with rem.cwd(self.remote_params['base_dir']):
-          rem['makedir']['-p'](self.remote_params['todo_subdir'])
-          rem['makedir']['-p'](self.remote_params['done_subdir'])
+          rem['mkdir']['-p'](self.remote_params['todo_subdir'])
+          rem['mkdir']['-p'](self.remote_params['done_subdir'])
+
+      os.remove(local_key)
 
     except Exception as e:
+      print(repr(e))
       tk.messagebox.showerror('Error', str(e))
       return
 

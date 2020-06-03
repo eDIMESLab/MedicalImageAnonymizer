@@ -11,11 +11,8 @@
 | **Code quality** | [![Codacy](https://api.codacy.com/project/badge/Grade/393538cc4c4646b9ae16c5c82c4f79fd)](https://www.codacy.com/gh/eDIMESLab/MedicalImageAnonymizer?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=eDIMESLab/MedicalImageAnonymizer&amp;utm_campaign=Badge_Grade) | [![CODEBEAT](https://codebeat.co/badges/bbb3362f-8476-4175-9c51-184278618686)](https://codebeat.co/projects/github-com-edimeslab-medicalimageanonymizer-master) |
 |:-------:|:-------:|:-------:|
 
-<a href="https://github.com/eDIMESLab">
-<div class="image">
-<img src="https://cdn.rawgit.com/physycom/templates/697b327d/logo_unibo.png" width="90" height="90">
-</div>
-</a>
+| <a href="https://github.com/eDIMESLab"><div class="image"><img src="https://avatars2.githubusercontent.com/u/58266717?s=200&v=4" width="90" height="90"></div></a> | <a href="https://github.com/UniboDIFABiophysics"><div class="image"><img src="https://cdn.rawgit.com/physycom/templates/697b327d/logo_unibo.png" width="90" height="90"></div></a> |
+|:-------------:|:----------|
 
 # Medical Image Anonymizer - MIA
 
@@ -33,7 +30,6 @@ Different kind of anonymizers for the most common bio-medical image formats.
 4. [Contributions](#contributions)
 5. [Acknowledgments](#acknowledgments)
 6. [Citation](#citation)
-
 
 ## Installation
 
@@ -137,13 +133,11 @@ See also the list of [contributors](https://github.com/eDIMESLab/MedicalImageAno
 
 The `MedicalImageAnonymizer` package is licensed under the MIT "Expat" License. [![License](https://img.shields.io/github/license/mashape/apistatus.svg)](https://github.com/eDIMESLab/MedicalImageAnonymizer/blob/master/LICENSE.md)
 
-
 ### Contributions
 
 Any contribution is more than welcome. Just fill an issue or a pull request and I will check ASAP!
 
 If you want update the list of layer objects please pay attention to the syntax of the layer class and to the names of member functions/variables used to prevent the compatibility with other layers and utility functions.
-
 
 ### Acknowledgments
 
@@ -163,4 +157,3 @@ Please cite `MedicalImageAnonymizer` if you use it in your research.
   howpublished = {\url{https://github.com/eDIMESLab/MedicalImageAnonymizer}},
 }
 ```
-
