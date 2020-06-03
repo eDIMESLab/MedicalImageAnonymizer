@@ -7,7 +7,6 @@ from tkinter import ttk
 import tkinter.simpledialog
 
 import os
-import plumbum
 import paramiko
 from glob import glob
 from configparser import ConfigParser
@@ -125,47 +124,44 @@ class _Config (ttk.Frame):
     key.write_private_key_file(keyfile)  # print private key
     pub_key = '{0} {1} {2}@{3}\n'.format(key.get_name(), key.get_base64(), username, hostname)
 
-    # keygen = plumbum.local['ssh-keygen']['-t']['rsa']['-b']['4096']['-y']['-q']['-C']['{0}@{1}'.format(username, hostname)]
-
-    # with open('./dummy.txt', 'w') as fp:
-    #   fp.write('{}\n'.format(self._parser.get('CONNECTION', 'keyfile')))
-
-    # keygen = keygen < './dummy.txt'
-    # os.remove('./dummy.txt')
-
-    # try:
-    #   pub_key = keygen()
-    #   pub_key = pub_key.split('ssh-rsa')[1].strip()
-
-    # except plumbum.ProcessExecutionError as e:
-    #   tk.messagebox.showerror('Error', 'Something goes wrong with ssh-keygen')
-    #   return
-
-    # add the id_rsa file to the ssh path
-    #ssh_add = plumbum.local['ssh-add']
-    #ssh_add.run('.')
-
-    local_key = './authorized_keys'
-    with open(local_key, 'w') as fp:
-      fp.write(pub_key)
-
-    # now copy the id_rsa.pub to the server
     try:
-      with plumbum.machines.paramiko_machine.ParamikoMachine(host=hostname, user=username, password=password) as rem:
-        # directories creation
-        rem['mkdir']['-p']('.ssh')
 
-        with rem.cwd('./.ssh'):
-          remote_key = rem.path(local_key)
-          plumbum.path.utils.copy(local_key, remote_key)
+      ssh = paramiko.SSHClient()
+      ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+      ssh.connect(hostname, port=22,
+                  username=username,
+                  password=password)
 
-        rem['mkdir']['-p'](self.remote_params['base_dir'])
+      # create .ssh dir
+      stdin, stdout, stderr = ssh.exec_command('mkdir -p .ssh')
+      if stdout.channel.recv_exit_status():    # status is not 0
+        tk.messagebox.showerror('Error', str(e))
+        return
+      # append authorized_keys
 
-        with rem.cwd(self.remote_params['base_dir']):
-          rem['mkdir']['-p'](self.remote_params['todo_subdir'])
-          rem['mkdir']['-p'](self.remote_params['done_subdir'])
+      stdin, stdout, stderr = ssh.exec_command('echo "{}" >> .ssh/authorized_keys'.format(pub_key))
+      if stdout.channel.recv_exit_status():    # status is not 0
+        tk.messagebox.showerror('Error', str(e))
+        return
 
-      os.remove(local_key)
+      # create directories
+      base_dir = self.remote_params['base_dir']
+      stdin, stdout, stderr = ssh.exec_command('mkdir -p {}'.format(base_dir))
+      if stdout.channel.recv_exit_status():    # status is not 0
+        tk.messagebox.showerror('Error', str(e))
+        return
+
+      stdin, stdout, stderr = ssh.exec_command('mkdir -p {}/{}'.format(base_dir, self.remote_params['todo_subdir']))
+      if stdout.channel.recv_exit_status():    # status is not 0
+        tk.messagebox.showerror('Error', str(e))
+        return
+
+      stdin, stdout, stderr = ssh.exec_command('mkdir -p {}/{}'.format(base_dir, self.remote_params['done_subdir']))
+      if stdout.channel.recv_exit_status():    # status is not 0
+        tk.messagebox.showerror('Error', str(e))
+        return
+
+      ssh.close()
 
     except Exception as e:
       print(repr(e))
