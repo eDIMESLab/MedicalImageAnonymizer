@@ -8,6 +8,7 @@ import stat
 
 import os
 import hashlib
+import paramiko
 from contextlib import contextmanager
 
 from plumbum import cli
@@ -81,7 +82,7 @@ def get_destination_local (params, remote_config):
       the (remote) directory where to search for the completed results.
 
   """
-  with ParamikoMachine(**params) as rem:
+  with ParamikoMachine(**params, missing_host_policy=paramiko.AutoAddPolicy()) as rem:
 
     with rem.cwd(remote_config['base_dir']):
 
