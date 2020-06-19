@@ -37,7 +37,7 @@ class _Puller (ttk.Frame):
     self._wdir  = tk.Radiobutton(self, text='  Directory', value=1, variable=self._import_type)
     self._wnum_files = tk.Label(self, textvariable=self._num_files)
     #self._wupdate = tk.Button(self, text='Load Anonymize data', command=self._update_cb)
-    self._wpull = tk.Button(self, text='Push files', command=self._pull_cb)
+    self._wpull = tk.Button(self, text='Pull files', command=self._pull_cb)
 
     # widget on grid
     self._winfos.grid(column=0, row=2, columnspan=3, rowspan=2)
@@ -58,11 +58,11 @@ class _Puller (ttk.Frame):
     local = os.path.abspath('.')
     listfile = tk.filedialog.askopenfilenames(initialdir=local,
                                              title='Select file',
-                                             filetypes=(('Dicom', '*.dcm'),
+                                             filetypes=(('all files', '*.*'),
+                                                        ('Dicom', '*.dcm'),
                                                         ('SVS', '*.svs'),
                                                         ('Tiff', '*.tiff'),
-                                                        ('Nifti', '*.nii'),
-                                                        ('all files', '*.*'))
+                                                        ('Nifti', '*.nii'))
                                              )
 
     if not listfile:

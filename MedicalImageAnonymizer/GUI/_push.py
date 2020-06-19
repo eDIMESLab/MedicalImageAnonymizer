@@ -59,11 +59,11 @@ class _Pusher (ttk.Frame):
     local = os.path.abspath('.')
     listfile = tk.filedialog.askopenfilenames(initialdir=local,
                                               title='Select file',
-                                              filetypes=(('Dicom', '*.dcm'),
+                                              filetypes=(('all files', '*.*'),
+                                                         ('Dicom', '*.dcm'),
                                                          ('SVS', '*.svs'),
                                                          ('Tiff', '*.tiff'),
-                                                         ('Nifti', '*.nii'),
-                                                         ('all files', '*.*'))
+                                                         ('Nifti', '*.nii'))
                                               )
 
     if not listfile:

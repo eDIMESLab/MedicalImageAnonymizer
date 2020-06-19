@@ -126,6 +126,9 @@ def query_single_file (filename, params, remote):
     find_hash = lambda p : origin_hash in str(p)
 
     paths = list(done.walk(filter=find_hash))
+  # returning the hash is necessary for the file pulling, as it needs
+  # to replace the name of the files after downloading them
+  return origin_hash, paths
 
 
 def push_single_file (filepath, params, remote_config):
