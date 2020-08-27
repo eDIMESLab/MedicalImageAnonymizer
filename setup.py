@@ -22,7 +22,7 @@ DESCRIPTION = 'Medical Image Anonymizer Toolkit'
 URL = 'https://github.com/eDIMESLab/MedicalImageAnonymizer'
 EMAIL = ['enrico.giampieri@unibo.it', 'nico.curti2@unibo.it']
 AUTHOR = ['Enrico Giampieri', 'Nico Curti']
-REQUIRES_PYTHON = '>=3.4'
+REQUIRES_PYTHON = '>=3.5'
 VERSION = None
 KEYWORDS = 'medical-image'
 
