@@ -11,10 +11,33 @@ except ImportError:
   from distutils.core import setup
   from distutils.core import find_packages
 
-from MedicalImageAnonymizer.build import get_requires
-from MedicalImageAnonymizer.build import read_description
-
 here = os.path.abspath(os.path.dirname(__file__))
+
+
+def get_requires (requirements_filename):
+  """
+  What packages are required for this module to be executed?
+  """
+  with open(requirements_filename, 'r') as fp:
+    requirements = fp.read()
+
+  return list(filter(lambda x: x != '', requirements.split()))
+
+
+def read_description (readme_filename):
+  """
+  Description package from filename
+  """
+
+  try:
+
+    with open(readme_filename, 'r') as fp:
+      description = '\n'
+      description += fp.read()
+
+  except Exception:
+    return ''
+
 
 # Package meta-data.
 NAME = 'MedicalImageAnonymizer'
